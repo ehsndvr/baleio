@@ -1,6 +1,11 @@
 <div align="center">
 
-# baleio
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="icons/lockup-primary-dark.svg">
+  <img alt="baleio" src="icons/lockup-primary.svg" width="360">
+</picture>
+
+<br>
 
 **یک فریم‌ورک مدرن و کاملاً async برای ساخت بازوهای [بله](https://bale.ai) — با الهام از [aiogram](https://github.com/aiogram/aiogram).**
 

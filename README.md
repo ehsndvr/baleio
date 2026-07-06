@@ -1,6 +1,11 @@
 <div align="center">
 
-# baleio
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="icons/lockup-primary-dark.svg">
+  <img alt="baleio" src="icons/lockup-primary.svg" width="360">
+</picture>
+
+<br>
 
 **A modern, fully-async framework for [Bale](https://bale.ai) (بله) bots — inspired by [aiogram](https://github.com/aiogram/aiogram).**
 
