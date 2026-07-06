@@ -32,8 +32,11 @@ dependencies = [
 dev = ["pytest>=7.4", "pytest-asyncio>=0.21", "mypy>=1.5"]
 
 [project.urls]
-Homepage = "https://github.com/baleio/baleio"
-Documentation = "https://docs.bale.ai/"
+Homepage = "https://github.com/ehsndvr/baleio"
+Documentation = "https://ehsndvr.github.io/baleio/"
+Repository = "https://github.com/ehsndvr/baleio"
+Issues = "https://github.com/ehsndvr/baleio/issues"
+Changelog = "https://github.com/ehsndvr/baleio/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["baleio"]
