@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>baleio — Documentation</title>
+<meta name="description" content="baleio — a modern, fully-async framework for Bale (بله) bots, inspired by aiogram. Routers, magic filters, FSM, keyboards and typed models.">
+<meta property="og:title" content="baleio — Documentation">
+<meta property="og:description" content="Build Bale bots the aiogram way.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body>
+<style>
+  :root{
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "JetBrains Mono", "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+    --bg:#ffffff; --bg-sidebar:#fafbfc; --bg-alt:#f5f7fa; --bg-inset:#f0f3f8;
+    --ink:#14181f; --ink-soft:#39424f; --muted:#69727f; --faint:#98a1ad;
+    --border:#e7ebf1; --border-strong:#d6dbe3;
+    --accent:#2f7be5; --accent-strong:#1c5fc0; --accent-2:#7c5cff;
+    --accent-wash:#eaf1fd;
+    --code-bg:#0f1524; --code-ink:#cbd5f0; --code-border:#1d2740;
+    --good:#1f9d5b; --warn:#b26b00;
+    --radius:12px; --radius-sm:8px;
+    --sidebar-w:270px; --toc-w:220px; --reading:44rem;
+    --shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 28px -18px rgba(16,24,40,.25);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0c0f16; --bg-sidebar:#090c12; --bg-alt:#12161f; --bg-inset:#141a25;
+    --ink:#e7ecf3; --ink-soft:#b6bfce; --muted:#828d9d; --faint:#5c6675;
+    --border:#1c222d; --border-strong:#28303d;
+    --accent:#6aa6ff; --accent-strong:#93bbff; --accent-2:#9d84ff;
+    --accent-wash:#12203a;
+    --code-bg:#0a0e18; --code-ink:#cbd5f0; --code-border:#1a2338;
+    --good:#3bc07f; --warn:#e0a458;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 18px 40px -24px rgba(0,0,0,.7);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:16px;line-height:1.68;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  ::selection{background:color-mix(in srgb, var(--accent) 26%, transparent)}
+
+  /* ---------------- layout ---------------- */
+  .layout{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr) var(--toc-w);
+    max-width:1400px;margin:0 auto;min-height:100vh}
+
+  /* ---------------- sidebar ---------------- */
+  .sidebar{grid-column:1;position:sticky;top:0;height:100vh;overflow-y:auto;
+    background:var(--bg-sidebar);border-right:1px solid var(--border);
+    padding:22px 16px 40px;scrollbar-width:thin}
+  .brand{display:flex;align-items:center;gap:11px;padding:6px 8px 4px;margin-bottom:6px}
+  .brand-mark{width:34px;height:34px;border-radius:9px;flex:none;
+    box-shadow:0 3px 10px -3px color-mix(in srgb, #2FB344 55%, transparent)}
+  .brand-name{font-family:var(--mono);font-weight:700;font-size:1.18rem;letter-spacing:-.02em;color:var(--ink)}
+  .brand-ver{font-family:var(--mono);font-size:.62rem;color:var(--accent);
+    border:1px solid color-mix(in srgb,var(--accent) 35%, transparent);
+    padding:1px 6px;border-radius:20px;margin-left:2px;transform:translateY(-1px)}
+
+  .searchbox{display:flex;align-items:center;gap:8px;margin:12px 8px 18px;padding:8px 11px;
+    background:var(--bg-inset);border:1px solid var(--border);border-radius:9px;color:var(--faint);
+    font-size:.85rem;cursor:text}
+  .searchbox kbd{margin-left:auto;font-family:var(--mono);font-size:.68rem;background:var(--bg);
+    border:1px solid var(--border-strong);border-radius:5px;padding:1px 5px;color:var(--muted)}
+
+  .nav-group{margin:16px 0}
+  .nav-group h4{font-family:var(--mono);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 6px;padding:0 10px;font-weight:600}
+  .nav-link{display:flex;align-items:center;gap:9px;padding:6px 10px;border-radius:7px;
+    color:var(--ink-soft);font-size:.895rem;line-height:1.3;transition:background .15s,color .15s}
+  .nav-link:hover{background:var(--bg-inset);text-decoration:none;color:var(--ink)}
+  .nav-link.active{background:var(--accent-wash);color:var(--accent-strong);font-weight:600}
+  .nav-link .dot{width:5px;height:5px;border-radius:50%;background:var(--border-strong);flex:none;transition:background .15s}
+  .nav-link.active .dot{background:var(--accent)}
+
+  /* ---------------- main ---------------- */
+  .main{grid-column:2;min-width:0;padding:0 clamp(20px,4vw,56px)}
+  .topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;
+    height:58px;background:color-mix(in srgb,var(--bg) 86%, transparent);
+    backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--border);
+    margin:0 clamp(-20px,-4vw,-56px) 0}
+  .topbar-inner{display:flex;align-items:center;gap:14px;width:100%;padding:0 clamp(20px,4vw,56px)}
+  .crumbs{font-size:.83rem;color:var(--muted);display:flex;gap:8px;align-items:center}
+  .crumbs b{color:var(--ink-soft);font-weight:600}
+  .topbar .spacer{flex:1}
+  .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;
+    border-radius:8px;border:1px solid var(--border);background:var(--bg-alt);color:var(--ink-soft);
+    cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+  .icon-btn:hover{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
+  .ghost-link{display:inline-flex;align-items:center;gap:7px;font-size:.85rem;color:var(--ink-soft);
+    padding:7px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-alt);font-weight:500}
+  .ghost-link:hover{color:var(--accent);text-decoration:none;border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
+  .menu-btn{display:none}
+
+  .content{padding:30px 0 90px;max-width:var(--reading)}
+  section{scroll-margin-top:78px}
+  section+section{margin-top:52px}
+
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:22px;height:1.5px;background:var(--accent);display:inline-block;opacity:.6}
+
+  h1,h2,h3{color:var(--ink);text-wrap:balance;line-height:1.2}
+  h1{font-size:clamp(2rem,4vw,2.7rem);font-weight:750;letter-spacing:-.028em;margin:.1em 0 .35em}
+  h2{font-size:1.55rem;font-weight:700;letter-spacing:-.02em;margin:0 0 .5em;
+    padding-bottom:.4em;border-bottom:1px solid var(--border)}
+  h3{font-size:1.12rem;font-weight:650;letter-spacing:-.01em;margin:1.6em 0 .5em}
+  p{margin:0 0 1em;color:var(--ink-soft)}
+  .lead{font-size:1.14rem;line-height:1.6;color:var(--ink-soft);max-width:38rem}
+  strong{color:var(--ink);font-weight:650}
+  .content ul{padding-left:1.15em;margin:0 0 1em;color:var(--ink-soft)}
+  .content li{margin:.3em 0}
+  code:not(pre code){font-family:var(--mono);font-size:.86em;background:var(--bg-inset);
+    border:1px solid var(--border);padding:.1em .38em;border-radius:5px;color:var(--accent-strong);
+    white-space:nowrap}
+
+  /* hero */
+  .hero{padding-top:8px}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 6px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-size:.92rem;font-weight:600;
+    padding:11px 20px;border-radius:9px;cursor:pointer;border:1px solid transparent;transition:transform .12s, box-shadow .2s, background .2s}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;
+    box-shadow:0 8px 22px -10px color-mix(in srgb,var(--accent) 75%, transparent)}
+  .btn-primary:hover{text-decoration:none;transform:translateY(-1px)}
+  .btn-ghost{background:var(--bg-alt);color:var(--ink);border-color:var(--border-strong)}
+  .btn-ghost:hover{text-decoration:none;border-color:var(--accent);color:var(--accent)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .chip{font-family:var(--mono);font-size:.72rem;color:var(--muted);background:var(--bg-alt);
+    border:1px solid var(--border);border-radius:20px;padding:4px 11px}
+  .chip b{color:var(--accent-strong);font-weight:600}
+
+  /* feature cards */
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:30px}
+  .card{background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px 17px;transition:transform .15s,border-color .15s,box-shadow .2s}
+  .card:hover{transform:translateY(-2px);border-color:var(--border-strong);box-shadow:var(--shadow)}
+  .card .ic{font-family:var(--mono);font-weight:700;color:var(--accent);font-size:.95rem;margin-bottom:7px;
+    display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:8px;
+    background:var(--accent-wash)}
+  .card h4{margin:.1em 0 .3em;font-size:.98rem;color:var(--ink);font-weight:650}
+  .card p{margin:0;font-size:.86rem;line-height:1.5;color:var(--muted)}
+
+  /* code blocks */
+  .code{position:relative;margin:0 0 1.15em}
+  .code-head{display:flex;align-items:center;gap:8px;background:var(--code-bg);
+    border:1px solid var(--code-border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;
+    padding:8px 14px}
+  .code-head .lang{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
+    color:#8b96b8}
+  .code-head .fn{font-family:var(--mono);font-size:.75rem;color:#5f6b8c;margin-left:2px}
+  .code-head .dots{display:flex;gap:6px;margin-left:auto}
+  .code-head .dots i{width:10px;height:10px;border-radius:50%;background:#2a3350;display:block}
+  pre{margin:0;background:var(--code-bg);border:1px solid var(--code-border);
+    border-radius:0 0 var(--radius) var(--radius);padding:16px 18px;overflow-x:auto}
+  .code.plain pre{border-radius:var(--radius)}
+  pre code{font-family:var(--mono);font-size:.83rem;line-height:1.62;color:var(--code-ink);white-space:pre}
+  .copy-btn{position:absolute;top:7px;right:9px;font-family:var(--mono);font-size:.68rem;
+    color:#8b96b8;background:rgba(255,255,255,.05);border:1px solid var(--code-border);
+    border-radius:6px;padding:3px 9px;cursor:pointer;opacity:0;transition:opacity .15s,color .15s}
+  .code:hover .copy-btn{opacity:1}
+  .copy-btn:hover{color:#cdd6f4}
+  .copy-btn.done{color:var(--good)}
+
+  /* syntax tokens */
+  .tok-kw{color:#c792ea}
+  .tok-str{color:#a5d78b}
+  .tok-com{color:#5f6b8c;font-style:italic}
+  .tok-num{color:#f6a878}
+  .tok-dec{color:#ffcb6b}
+  .tok-fn{color:#82aaff}
+  .tok-cls{color:#7fd3ff}
+  .tok-self{color:#f0879a}
+  .tok-op{color:#89b0e0}
+
+  /* admonition */
+  .note{display:flex;gap:13px;background:var(--accent-wash);
+    border:1px solid color-mix(in srgb,var(--accent) 28%, var(--border));
+    border-left:3px solid var(--accent);border-radius:var(--radius-sm);padding:13px 16px;margin:0 0 1.15em}
+  .note .ni{font-family:var(--mono);font-weight:700;color:var(--accent-strong);flex:none}
+  .note p{margin:0;font-size:.9rem;color:var(--ink-soft)}
+  .note b{color:var(--ink)}
+
+  /* table */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);margin:0 0 1.15em}
+  table{border-collapse:collapse;width:100%;font-size:.87rem}
+  th,td{text-align:left;padding:10px 15px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+    background:var(--bg-alt);font-weight:600}
+  tr:last-child td{border-bottom:none}
+  td code{white-space:nowrap}
+
+  /* right toc */
+  .toc{grid-column:3;position:sticky;top:0;height:100vh;overflow-y:auto;padding:70px 20px 40px;
+    border-left:1px solid var(--border)}
+  .toc h5{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 10px;font-weight:600}
+  .toc a{display:block;font-size:.83rem;color:var(--muted);padding:4px 0 4px 12px;
+    border-left:2px solid var(--border);line-height:1.35;transition:color .15s,border-color .15s}
+  .toc a:hover{color:var(--ink);text-decoration:none}
+  .toc a.active{color:var(--accent-strong);border-left-color:var(--accent);font-weight:600}
+
+  .footer{border-top:1px solid var(--border);margin-top:40px;padding-top:24px;
+    font-size:.82rem;color:var(--muted);max-width:var(--reading)}
+  .footer a{color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+  .footer a:hover{color:var(--accent)}
+
+  .scrim{display:none}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(10px)}
+  .revealed{opacity:1;transform:none;transition:opacity .5s ease, transform .5s ease}
+  @media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none}.revealed{transition:none}}
+
+  /* responsive */
+  @media (max-width:1180px){
+    .layout{grid-template-columns:var(--sidebar-w) minmax(0,1fr)}
+    .toc{display:none}
+  }
+  @media (max-width:860px){
+    .layout{grid-template-columns:1fr}
+    .sidebar{position:fixed;left:0;top:0;z-index:60;width:290px;transform:translateX(-102%);
+      transition:transform .25s ease;box-shadow:0 0 60px rgba(0,0,0,.25)}
+    :root[data-nav="open"] .sidebar{transform:none}
+    .main{grid-column:1}
+    .menu-btn{display:inline-flex}
+    .scrim{position:fixed;inset:0;background:rgba(6,10,18,.45);z-index:55;display:none}
+    :root[data-nav="open"] .scrim{display:block}
+    .cards{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion: reduce){.sidebar{transition:none}.card,.btn{transition:none}}
+</style>
+
+<div class="scrim" id="scrim"></div>
+<div class="layout">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 128 128" aria-hidden="true">
+        <g transform="translate(4,-30)">
+          <rect x="4" y="44" width="112" height="100" rx="32" fill="#2FB344"/>
+          <circle cx="40.75" cy="77.25" r="9.25" fill="#fff"/>
+          <circle cx="79.25" cy="77.25" r="9.25" fill="#fff"/>
+          <g transform="translate(49.41,118.98)"><path d="M11.78 0.45L11.78 0.45Q9.63 0.45 8.48-0.29Q7.33-1.02 6.78-1.92L6.78-1.92L6.21-1.92L6.21 0L2.24 0L2.24-22.40L6.27-22.40L6.27-14.05L6.85-14.05Q7.20-14.62 7.79-15.14Q8.38-15.65 9.36-15.98Q10.34-16.32 11.78-16.32L11.78-16.32Q13.70-16.32 15.33-15.38Q16.96-14.43 17.95-12.61Q18.94-10.78 18.94-8.19L18.94-8.19L18.94-7.68Q18.94-5.09 17.95-3.26Q16.96-1.44 15.33-0.50Q13.70 0.45 11.78 0.45ZM10.56-3.07L10.56-3.07Q12.42-3.07 13.66-4.27Q14.91-5.47 14.91-7.78L14.91-7.78L14.91-8.10Q14.91-10.40 13.68-11.60Q12.45-12.80 10.56-12.80L10.56-12.80Q8.70-12.80 7.46-11.60Q6.21-10.40 6.21-8.10L6.21-8.10L6.21-7.78Q6.21-5.47 7.46-4.27Q8.70-3.07 10.56-3.07Z" fill="#fff"/></g>
+        </g>
+      </svg>
+      <span class="brand-name">baleio</span>
+      <span class="brand-ver">v0.1</span>
+    </div>
+
+    <div class="searchbox" onclick="alert('Search is illustrative in this preview.')">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      Search docs<kbd>/</kbd>
+    </div>
+
+    <nav id="nav">
+      <div class="nav-group">
+        <h4>Getting started</h4>
+        <a class="nav-link" href="#overview"><span class="dot"></span>Overview</a>
+        <a class="nav-link" href="#installation"><span class="dot"></span>Installation</a>
+        <a class="nav-link" href="#quickstart"><span class="dot"></span>Quick start</a>
+      </div>
+      <div class="nav-group">
+        <h4>Guide</h4>
+        <a class="nav-link" href="#dispatcher"><span class="dot"></span>Dispatcher &amp; Router</a>
+        <a class="nav-link" href="#filters"><span class="dot"></span>Filters</a>
+        <a class="nav-link" href="#callbackdata"><span class="dot"></span>CallbackData</a>
+        <a class="nav-link" href="#fsm"><span class="dot"></span>Finite State Machine</a>
+        <a class="nav-link" href="#keyboards"><span class="dot"></span>Keyboards</a>
+        <a class="nav-link" href="#errors"><span class="dot"></span>Error handling</a>
+      </div>
+      <div class="nav-group">
+        <h4>Reference</h4>
+        <a class="nav-link" href="#cheatsheet"><span class="dot"></span>aiogram → baleio</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open navigation">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <div class="crumbs"><span>Docs</span> <span>/</span> <b id="crumbNow">Overview</b></div>
+        <span class="spacer"></span>
+        <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">
+          <svg id="iconMoon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+        </button>
+        <a class="ghost-link" href="https://github.com/ehsndvr/baleio" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 014 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- OVERVIEW / HERO -->
+      <section id="overview" class="hero">
+        <div class="eyebrow reveal">Python · Async · Bale bot API</div>
+        <h1 class="reveal">Build Bale bots the aiogram way.</h1>
+        <p class="lead reveal"><b>baleio</b> is a modern, fully-async framework for
+          <a href="https://bale.ai" target="_blank" rel="noopener">Bale</a> (بله) bots — inspired by
+          <a href="https://github.com/aiogram/aiogram" target="_blank" rel="noopener">aiogram</a>.
+          Routers, magic filters, FSM, dependency injection, keyboard builders and typed
+          Pydantic v2 models. If you know aiogram 3.x, you already know baleio.</p>
+
+        <div class="hero-cta reveal">
+          <a class="btn btn-primary" href="#quickstart">Get started
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn-ghost" href="https://github.com/ehsndvr/baleio" target="_blank" rel="noopener">View on GitHub</a>
+        </div>
+
+        <div class="chips reveal">
+          <span class="chip"><b>pip</b> install baleio</span>
+          <span class="chip">Python <b>3.9+</b></span>
+          <span class="chip"><b>Pydantic</b> v2</span>
+          <span class="chip"><b>aiohttp</b></span>
+          <span class="chip"><b>MIT</b> license</span>
+        </div>
+
+        <div class="cards reveal">
+          <div class="card"><span class="ic">/</span><h4>Routers &amp; DI</h4><p>Nested <code>Router</code>s, per-event observers, and by-name dependency injection.</p></div>
+          <div class="card"><span class="ic">F</span><h4>Magic filters</h4><p><code>Command</code>, the magic <code>F</code>, and <code>&amp; | ~</code> combinators.</p></div>
+          <div class="card"><span class="ic">#</span><h4>CallbackData</h4><p>Type-safe, packed callback payloads with automatic length checks.</p></div>
+          <div class="card"><span class="ic">→</span><h4>FSM</h4><p><code>StatesGroup</code>, <code>State</code> and pluggable storage for conversations.</p></div>
+        </div>
+      </section>
+
+      <!-- INSTALLATION -->
+      <section id="installation">
+        <div class="eyebrow">Getting started</div>
+        <h2>Installation</h2>
+        <p>baleio requires <strong>Python 3.9+</strong> and installs a small, well-established stack:
+          <code>aiohttp</code>, <code>pydantic&nbsp;v2</code> and <code>magic-filter</code>.</p>
+        <div class="code plain" data-lang="bash"><pre><code class="lang-bash"># from PyPI
+pip install baleio
+
+# or from source
+git clone https://github.com/ehsndvr/baleio &amp;&amp; cd baleio
+pip install -e .</code></pre></div>
+        <p>Create a bot and grab a token from <a href="https://ble.ir/botfather" target="_blank" rel="noopener">@botfather</a>
+          in Bale — it looks like <code>123456789:XXXXXXXX</code>.</p>
+      </section>
+
+      <!-- QUICK START -->
+      <section id="quickstart">
+        <div class="eyebrow">Getting started</div>
+        <h2>Quick start</h2>
+        <p>The snippet below is the <strong>official aiogram quickstart</strong>, ported to baleio almost
+          line-for-line. Only the import roots and the text formatter change — Bale renders Markdown, so
+          <code>md</code> replaces aiogram's <code>html</code>.</p>
+        <div class="code" data-lang="python" data-fn="bot.py"><pre><code class="lang-python">import asyncio
+import logging
+import sys
+from os import getenv
+
+from baleio import Bot, Dispatcher, md
+from baleio.client.default import DefaultBotProperties
+from baleio.enums import ParseMode
+from baleio.filters import CommandStart
+from baleio.types import Message
+
+TOKEN = getenv("BOT_TOKEN")   # get one from @botfather in Bale
+
+dp = Dispatcher()
+
+
+@dp.message(CommandStart())
+async def command_start_handler(message: Message) -> None:
+    await message.answer(f"Hello, {md.bold(message.from_user.full_name)}!")
+
+
+@dp.message()
+async def echo_handler(message: Message) -> None:
+    try:
+        await message.send_copy(chat_id=message.chat.id)
+    except TypeError:
+        await message.answer("Nice try!")
+
+
+async def main() -> None:
+    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    asyncio.run(main())</code></pre></div>
+        <div class="note"><span class="ni">i</span><p><b>Bale vs. Telegram.</b> Bale always renders Markdown and does
+          not accept a <code>parse_mode</code> request parameter. <code>DefaultBotProperties(parse_mode=…)</code>
+          is accepted for aiogram parity and safely ignored. Use <code>md.bold</code> / <code>md.italic</code> /
+          <code>md.link</code> for formatting.</p></div>
+      </section>
+
+      <!-- DISPATCHER -->
+      <section id="dispatcher">
+        <div class="eyebrow">Guide</div>
+        <h2>Dispatcher &amp; Router</h2>
+        <p>The <code>Dispatcher</code> is the root router and the entry point for update processing.
+          <code>Router</code> groups related handlers so a large bot can be split into modules.</p>
+        <div class="code" data-lang="python"><pre><code class="lang-python">from baleio import Dispatcher, Router
+from baleio.filters import Command
+
+dp = Dispatcher()
+admin = Router(name="admin")
+dp.include_router(admin)
+
+@dp.message(Command("start"))
+async def start(message): ...
+
+@admin.message(Command("ban"))
+async def ban(message): ...</code></pre></div>
+        <p>Handlers run in <strong>registration order</strong>; the first whose filters all pass wins.</p>
+        <h3>Dependency injection</h3>
+        <p>Each handler receives the event first; further parameters are filled <strong>by name</strong> from the
+          context — <code>bot</code>, <code>state</code>, <code>event_update</code>, and anything a filter returned.</p>
+        <div class="code" data-lang="python"><pre><code class="lang-python">from baleio import Bot
+from baleio.fsm import FSMContext
+
+@dp.message(Command("me"))
+async def me(message: Message, bot: Bot, state: FSMContext):
+    who = await bot.get_me()          # bot & state injected automatically
+    await message.answer(f"I am {who.first_name}")</code></pre></div>
+      </section>
+
+      <!-- FILTERS -->
+      <section id="filters">
+        <div class="eyebrow">Guide</div>
+        <h2>Filters</h2>
+        <p>A filter decides whether a handler should run. baleio accepts built-in filters, the magic
+          filter <code>F</code>, and plain callables — all interchangeable and composable with
+          <code>&amp;</code> / <code>|</code> / <code>~</code>.</p>
+        <div class="code" data-lang="python"><pre><code class="lang-python">from baleio.filters import Command, CommandStart, F
+
+@dp.message(Command("help"))                          # /help
+@dp.message(CommandStart())                           # /start
+@dp.message(F.text == "hello")                        # magic filter
+@dp.message(F.text.startswith("/"))
+@dp.message(F.from_user.id == 12345)
+@dp.message(Command("go") &amp; (F.from_user.id == 42))   # combinators</code></pre></div>
+        <p><code>Command</code> also injects a <code>CommandObject</code> with the parsed arguments:</p>
+        <div class="code" data-lang="python"><pre><code class="lang-python">from baleio.filters import Command, CommandObject
+
+@dp.message(Command("say"))
+async def say(message: Message, command: CommandObject):
+    await message.answer(command.args or "Say what?")</code></pre></div>
+      </section>
+
+      <!-- CALLBACK DATA -->
+      <section id="callbackdata">
+        <div class="eyebrow">Guide</div>
+        <h2>CallbackData factory</h2>
+        <p>Type-safe, structured payloads for inline buttons instead of hand-formatted strings — exactly
+          like aiogram. Fields are coerced back to their declared types on <code>unpack</code>, and Bale's
+          64-byte limit is enforced automatically.</p>
+        <div class="code" data-lang="python"><pre><code class="lang-python">from baleio import F
+from baleio.filters import CallbackData
+from baleio.types import CallbackQuery
+from baleio.utils import InlineKeyboardBuilder
+
+class Vote(CallbackData, prefix="vote"):
+    action: str
+    post_id: int
+
+kb = (
+    InlineKeyboardBuilder()
+    .button("👍", callback_data=Vote(action="up", post_id=7).pack())   # "vote:up:7"
+    .button("👎", callback_data=Vote(action="down", post_id=7).pack())
+    .as_markup()
+)
+
+@dp.callback_query(Vote.filter(F.action == "up"))
+async def upvote(query: CallbackQuery, callback_data: Vote):
+    await query.answer(f"Post {callback_data.post_id} liked")</code></pre></div>
+      </section>
+
+      <!-- FSM -->
+      <section id="fsm">
+        <div class="eyebrow">Guide</div>
+        <h2>Finite State Machine</h2>
+        <p>Drive multi-step conversations with an injected <code>FSMContext</code>. A <code>State</code> can be
+          used directly as a handler filter.</p>
+        <div class="code" data-lang="python"><pre><code class="lang-python">from baleio.fsm import State, StatesGroup, FSMContext
+
+class Form(StatesGroup):
+    name = State()
+    age = State()
+
+@dp.message(Command("start"))
+async def start(message: Message, state: FSMContext):
+    await state.set_state(Form.name)
+    await message.answer("What's your name?")
+
+@dp.message(Form.name)                       # a State used as a filter
+async def got_name(message: Message, state: FSMContext):
+    await state.update_data(name=message.text)
+    await state.set_state(Form.age)
+    await message.answer("How old are you?")</code></pre></div>
+      </section>
+
+      <!-- KEYBOARDS -->
+      <section id="keyboards">
+        <div class="eyebrow">Guide</div>
+        <h2>Keyboards</h2>
+        <p>Builders for inline and reply keyboards, plus the raw markup types.</p>
+        <div class="code" data-lang="python"><pre><code class="lang-python">from baleio.utils import InlineKeyboardBuilder
+from baleio import F
+
+kb = (
+    InlineKeyboardBuilder()
+    .button("Yes", callback_data="yes")
+    .button("No", callback_data="no")
+    .adjust(2)
+    .as_markup()
+)
+await message.answer("Agree?", reply_markup=kb)
+
+@dp.callback_query(F.data == "yes")
+async def yes(cb):
+    await cb.answer("Great!", show_alert=True)   # always answer to release the button
+    await cb.message.edit_text("You chose: Yes")</code></pre></div>
+      </section>
+
+      <!-- ERRORS -->
+      <section id="errors">
+        <div class="eyebrow">Guide</div>
+        <h2>Error handling</h2>
+        <p>When a handler raises, baleio wraps the exception in an <code>ErrorEvent</code> and routes it to
+          <code>@dp.errors()</code> handlers. If none match, the exception is re-raised — logged in polling
+          so the bot stays alive.</p>
+        <div class="code" data-lang="python"><pre><code class="lang-python">from baleio.filters import ExceptionTypeFilter
+from baleio.types import ErrorEvent
+
+@dp.errors(ExceptionTypeFilter(ValueError))
+async def on_value_error(event: ErrorEvent):
+    await event.update.message.answer("Something went wrong 😔")
+
+@dp.errors()   # any other unhandled error
+async def on_any_error(event: ErrorEvent):
+    logging.exception("Unhandled", exc_info=event.exception)</code></pre></div>
+      </section>
+
+      <!-- CHEAT SHEET -->
+      <section id="cheatsheet">
+        <div class="eyebrow">Reference</div>
+        <h2>aiogram → baleio</h2>
+        <p>Coming from aiogram? The mapping is almost one-to-one.</p>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>aiogram</th><th>baleio</th></tr></thead>
+            <tbody>
+              <tr><td><code>from aiogram import Bot, Dispatcher, F</code></td><td><code>from baleio import Bot, Dispatcher, F</code></td></tr>
+              <tr><td><code>aiogram.types.Message</code></td><td><code>baleio.types.Message</code></td></tr>
+              <tr><td><code>aiogram.filters.Command</code></td><td><code>baleio.filters.Command</code></td></tr>
+              <tr><td><code>aiogram.filters.callback_data.CallbackData</code></td><td><code>baleio.filters.CallbackData</code></td></tr>
+              <tr><td><code>aiogram.fsm.state.StatesGroup</code></td><td><code>baleio.fsm.StatesGroup</code></td></tr>
+              <tr><td><code>@dp.errors()</code> + <code>ErrorEvent</code></td><td><code>@dp.errors()</code> + <code>baleio.types.ErrorEvent</code></td></tr>
+              <tr><td><code>aiogram.html.bold</code></td><td><code>baleio.md.bold</code> <span style="color:var(--muted)">(Markdown-only)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note"><span class="ni">!</span><p><b>Key differences.</b> Bale has no <code>parse_mode</code>
+          parameter (always Markdown), its updates are limited to <code>message</code>,
+          <code>edited_message</code>, <code>callback_query</code> and <code>pre_checkout_query</code>, and
+          payments are wallet-only.</p></div>
+      </section>
+
+      <div class="footer">
+        <p><b style="color:var(--ink)">baleio</b> — MIT licensed. An independent community project, not
+          affiliated with Bale Messenger or aiogram.<br>
+          <a href="https://github.com/ehsndvr/baleio" target="_blank" rel="noopener">GitHub</a> ·
+          <a href="https://github.com/ehsndvr/baleio/blob/main/README.fa.md" target="_blank" rel="noopener">مستندات فارسی</a> ·
+          <a href="https://bale.ai" target="_blank" rel="noopener">Bale</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RIGHT TOC ============ -->
+  <aside class="toc">
+    <h5>On this page</h5>
+    <a href="#overview">Overview</a>
+    <a href="#installation">Installation</a>
+    <a href="#quickstart">Quick start</a>
+    <a href="#dispatcher">Dispatcher &amp; Router</a>
+    <a href="#filters">Filters</a>
+    <a href="#callbackdata">CallbackData</a>
+    <a href="#fsm">Finite State Machine</a>
+    <a href="#keyboards">Keyboards</a>
+    <a href="#errors">Error handling</a>
+    <a href="#cheatsheet">aiogram → baleio</a>
+  </aside>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- theme ---------- */
+  var root = document.documentElement;
+  function setTheme(t){
+    root.setAttribute("data-theme", t);
+    try{ localStorage.setItem("baleio-theme", t); }catch(e){}
+  }
+  (function initTheme(){
+    var saved=null; try{ saved=localStorage.getItem("baleio-theme"); }catch(e){}
+    if(saved){ setTheme(saved); }
+    else if(window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches){ setTheme("dark"); }
+    else { setTheme("light"); }
+  })();
+  document.getElementById("themeBtn").addEventListener("click", function(){
+    setTheme(root.getAttribute("data-theme")==="dark" ? "light" : "dark");
+  });
+
+  /* ---------- mobile nav ---------- */
+  var menuBtn=document.getElementById("menuBtn"), scrim=document.getElementById("scrim");
+  function closeNav(){ root.removeAttribute("data-nav"); }
+  menuBtn.addEventListener("click", function(){
+    root.setAttribute("data-nav", root.getAttribute("data-nav")==="open" ? "" : "open");
+  });
+  scrim.addEventListener("click", closeNav);
+
+  /* ---------- python syntax highlighter ---------- */
+  var KW = /^(?:False|None|True|and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield|match|case)$/;
+  var CONST = /^(?:True|False|None)$/;
+  var BUILTIN = /^(?:print|len|range|str|int|float|bool|list|dict|set|tuple|super|isinstance|getattr|setattr|open|Exception|TypeError|ValueError|KeyError|RuntimeError)$/;
+  function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function span(cls,s){ return '<span class="'+cls+'">'+esc(s)+'</span>'; }
+
+  function highlight(src){
+    var i=0, n=src.length, out="";
+    function isId(c){ return /[A-Za-z0-9_]/.test(c); }
+    while(i<n){
+      var c=src[i];
+      // comment
+      if(c==="#"){ var j=i; while(j<n && src[j]!=="\n") j++; out+=span("tok-com", src.slice(i,j)); i=j; continue; }
+      // string (with optional prefix r/f/b/u)
+      var pm=/^[rRbBuUfF]{0,2}('''|"""|'|")/.exec(src.slice(i));
+      if(pm){
+        var q=pm[1], start=i, plen=pm[0].length-q.length; i+=plen; // consume prefix
+        i+=q.length;
+        if(q.length===3){
+          var end=src.indexOf(q, i); end = end<0? n : end+3; i=end;
+        } else {
+          while(i<n){ if(src[i]==="\\"){ i+=2; continue; } if(src[i]===q){ i++; break; } if(src[i]==="\n"){ break; } i++; }
+        }
+        out+=span("tok-str", src.slice(start,i)); continue;
+      }
+      // decorator
+      if(c==="@" && i+1<n && /[A-Za-z_]/.test(src[i+1])){
+        var k=i+1; while(k<n && (isId(src[k])||src[k]===".")) k++;
+        out+=span("tok-dec", src.slice(i,k)); i=k; continue;
+      }
+      // number
+      if(/[0-9]/.test(c) && (i===0 || !isId(src[i-1]))){
+        var m=/^[0-9][0-9_]*\.?[0-9_]*(?:[eE][+-]?[0-9]+)?/.exec(src.slice(i));
+        out+=span("tok-num", m[0]); i+=m[0].length; continue;
+      }
+      // identifier / keyword
+      if(/[A-Za-z_]/.test(c)){
+        var s=i; while(i<n && isId(src[i])) i++;
+        var word=src.slice(s,i);
+        var after=src.slice(i); var nextNonSpace=after.replace(/^[ \t]*/,"")[0]||"";
+        if(word==="self"||word==="cls"){ out+=span("tok-self", word); }
+        else if(CONST.test(word)){ out+=span("tok-num", word); }
+        else if(KW.test(word)){ out+=span("tok-kw", word); }
+        else if(BUILTIN.test(word)){ out+=span("tok-cls", word); }
+        else if(nextNonSpace==="("){ out+=span("tok-fn", word); }
+        else if(/^[A-Z]/.test(word)){ out+=span("tok-cls", word); }
+        else { out+=esc(word); }
+        continue;
+      }
+      // default char
+      out+=esc(c); i++;
+    }
+    return out;
+  }
+  function highlightBash(src){
+    return esc(src).replace(/(^|\n)(#[^\n]*)/g, function(_,p,c){ return p+'<span class="tok-com">'+c+'</span>'; })
+                   .replace(/\b(pip|git|cd|python|export|install|clone)\b/g, '<span class="tok-fn">$1</span>');
+  }
+
+  document.querySelectorAll("pre code").forEach(function(code){
+    var raw = code.textContent;
+    code.setAttribute("data-raw", raw);
+    if(code.classList.contains("lang-bash")) code.innerHTML = highlightBash(raw);
+    else code.innerHTML = highlight(raw);
+  });
+
+  /* ---------- code head + copy button ---------- */
+  document.querySelectorAll(".code").forEach(function(block){
+    var pre=block.querySelector("pre"), code=block.querySelector("code");
+    if(!block.classList.contains("plain")){
+      var head=document.createElement("div"); head.className="code-head";
+      var lang=document.createElement("span"); lang.className="lang"; lang.textContent=block.getAttribute("data-lang")||"python";
+      head.appendChild(lang);
+      if(block.getAttribute("data-fn")){ var fn=document.createElement("span"); fn.className="fn"; fn.textContent=block.getAttribute("data-fn"); head.appendChild(fn); }
+      var dots=document.createElement("span"); dots.className="dots"; dots.innerHTML="<i></i><i></i><i></i>"; head.appendChild(dots);
+      block.insertBefore(head, pre);
+    }
+    var btn=document.createElement("button"); btn.className="copy-btn"; btn.type="button"; btn.textContent="copy";
+    btn.addEventListener("click", function(){
+      var text=code.getAttribute("data-raw")||code.textContent;
+      var done=function(){ btn.textContent="copied"; btn.classList.add("done"); setTimeout(function(){ btn.textContent="copy"; btn.classList.remove("done"); },1400); };
+      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, done); }
+      else { try{ var ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); done(); }catch(e){} }
+    });
+    block.appendChild(btn);
+  });
+
+  /* ---------- scroll-spy ---------- */
+  var sections=[].slice.call(document.querySelectorAll("section[id]"));
+  var links=[].slice.call(document.querySelectorAll('.nav-link, .toc a'));
+  var crumb=document.getElementById("crumbNow");
+  var titles={overview:"Overview",installation:"Installation",quickstart:"Quick start",
+    dispatcher:"Dispatcher & Router",filters:"Filters",callbackdata:"CallbackData",
+    fsm:"Finite State Machine",keyboards:"Keyboards",errors:"Error handling",cheatsheet:"aiogram → baleio"};
+  function setActive(id){
+    links.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href")==="#"+id); });
+    if(titles[id]) crumb.textContent=titles[id];
+  }
+  var spy=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting) setActive(e.target.id); });
+  }, {rootMargin:"-45% 0px -50% 0px", threshold:0});
+  sections.forEach(function(s){ spy.observe(s); });
+
+  links.forEach(function(a){ a.addEventListener("click", function(){ if(window.innerWidth<=860) closeNav(); }); });
+
+  /* ---------- reveal on load ---------- */
+  var reveals=[].slice.call(document.querySelectorAll(".reveal"));
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches){
+    reveals.forEach(function(el){ el.classList.add("revealed"); });
+  } else {
+    reveals.forEach(function(el,idx){ setTimeout(function(){ el.classList.add("revealed"); }, 60+idx*70); });
+  }
+})();
+</script>
+
+</body>
+</html>
