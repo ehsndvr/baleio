@@ -1,0 +1,27 @@
+/* baleio docs — small tweaks on top of the furo theme */
+
+.sidebar-brand-text {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+/* Tighten the feature cards on the landing page */
+.sd-card {
+  border-radius: 12px;
+}
+
+.sd-card .sd-card-title {
+  font-size: 1.05rem;
+}
+
+/* Inline code a touch softer */
+code.literal {
+  border-radius: 6px;
+}
+
+/* Hero tagline on the index page */
+.baleio-hero {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}

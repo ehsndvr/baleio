@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "baleio"
+version = "0.1.0"
+description = "Modern, fully async framework for Bale (بله) messenger bots — inspired by aiogram."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "baleio contributors" }]
+keywords = ["bale", "bot", "api", "async", "aiogram", "بله", "بازو"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Communications :: Chat",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+dependencies = [
+    "aiohttp>=3.9.0",
+    "pydantic>=2.4.1,<3.0",
+    "magic-filter>=1.0.12",
+    "certifi>=2023.7.22",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "pytest-asyncio>=0.21", "mypy>=1.5"]
+
+[project.urls]
+Homepage = "https://github.com/baleio/baleio"
+Documentation = "https://docs.bale.ai/"
+
+[tool.hatch.build.targets.wheel]
+packages = ["baleio"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
